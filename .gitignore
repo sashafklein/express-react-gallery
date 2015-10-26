@@ -1,0 +1,3 @@
+# Ignore logging
+*.log
+node_modules/
