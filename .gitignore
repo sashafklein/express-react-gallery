@@ -1,3 +1,5 @@
 # Ignore logging
 *.log
+
+# No need to track local module installs
 node_modules/
