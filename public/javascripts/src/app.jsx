@@ -1,7 +1,8 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Gallery = require('./Gallery.jsx');
 
-React.render(
+ReactDOM.render(
   <Gallery />,
   document.getElementById('gallery')
 );
