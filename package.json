@@ -18,6 +18,10 @@
     "express-compile-sass": "3.0.4"
   },
   "devDependencies": {
-    "react-tools": "^0.13.3"
+    "browserify": "^12.0.0",
+    "gulp": "^3.9.0",
+    "react": "^0.14.0",
+    "reactify": "^1.1.1",
+    "vinyl-source-stream": "^1.1.0"
   }
 }

@@ -3,3 +3,5 @@
 
 # No need to track local module installs
 node_modules/
+
+javascripts/build/.module-cache
