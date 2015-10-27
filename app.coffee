@@ -9,6 +9,10 @@ compileSass = require 'express-compile-sass'
 routes = require './routes/index'
 users = require './routes/users'
 
+# load env variables from (gitignored) .env file
+env = require('node-env-file')
+env __dirname + '/.env'
+
 app = express()
 staticPath = path.join __dirname, 'public'
 
