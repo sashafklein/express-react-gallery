@@ -4,12 +4,17 @@ module.exports = React.createClass({
   getInitialState: function() {
     return ({
       url: '',
-      desc: ''
+      desc: '',
+      getClassName: function() { return ''; }
     });     
   },
   render: function() {
     return (
-      <img src={this.props.url} title={this.props.desc}></img>
+      <img 
+        src={this.props.url} 
+        title={this.props.desc} 
+        className={ this.props.getClassName( this.props.index ) }>
+      </img>
     );    
   }
 });

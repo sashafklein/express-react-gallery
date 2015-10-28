@@ -40547,7 +40547,6 @@ module.exports = warning;
 module.exports = require('./lib/React');
 
 },{"./lib/React":28}],160:[function(require,module,exports){
-(function (process){
 var $, FreeImages, _;
 
 $ = require('jquery');
@@ -40559,28 +40558,28 @@ FreeImages = (function() {
   }
 
   FreeImages.prototype.fetch = function(callback) {
-    $.ajax({
+    return $.ajax({
       crossDomain: true,
-      type: "GET",
+      type: 'GET',
       url: this._dataUrl(),
-      dataType: "jsonp",
+      dataType: 'jsonp',
       jsonpCallback: 'jsonCallback',
       success: function(result) {
-        var images = _.reduce(result.sources, function(array, source) {
-          return array.concat( source.result );
-        }, [])
-        
-        return callback( images );
+        var images;
+        images = _.reduce(result.sources, (function(array, source) {
+          return array.concat(source.result);
+        }), []);
+        return callback(images);
       },
       error: function(result) {
+        alert('Something went wrong fetching images. Please refresh.');
         return false;
       }
     });
-    return true;
   };
 
   FreeImages.prototype._dataUrl = function() {
-    return "http://freeimages.pictures/api/user/" + process.env.FREE_IMAGES_API_KEY + "/?keyword=" + this.search + "&format=jsonp";
+    return "http://freeimages.pictures/api/user/" + 7419704496394844 + "/?keyword=" + this.search + "&format=jsonp";
   };
 
   return FreeImages;
@@ -40589,44 +40588,85 @@ FreeImages = (function() {
 
 module.exports = FreeImages;
 
-}).call(this,require('_process'))
-},{"_process":1,"jquery":2,"lodash":3}],161:[function(require,module,exports){
+},{"jquery":2,"lodash":3}],161:[function(require,module,exports){
+var $ = require('jquery')
 var React = require('react');
 var Image = require('./image.jsx');
-var FreeImages = require('../freeImages')
+var FreeImages = require("../freeImages.js");
 
 module.exports = React.createClass({displayName: "exports",
 
   getInitialState: function() {
-    return { data: [] }
+    return { images: [], currentImage: 0, count: 0 }
   },
-
   componentDidMount: function() {
     var component = this;
-
     new FreeImages('nature').fetch( function(images) {
-      component.setState({ data: images })
+      component.setState({ images: images, count: images.length });
     });
   },
-
+  placeholderClass: function () {
+    if ( this.state.count == 0 ) {
+      return 'placeholder';
+    } else {
+      return 'hidden';
+    }
+  },
+  nextImage: function() {
+    this.selectImage( this.state.currentImage + 1);
+  },
+  lastImage: function() {
+    this.selectImage( this.state.currentImage - 1 );
+  },
+  selectImage: function(imageIndex) {
+    if (imageIndex == this.state.count ) {
+      this.setState({ currentImage: 0 })
+    } else if (imageIndex < 0) {
+      this.setState({ currentImage: this.state.count - 1})
+    } else {
+      this.setState({ currentImage: imageIndex });
+    }
+  },
+  imageClass: function(index) {
+    if (this.state.currentImage == index) {
+      return ''
+    } else {
+      return 'hidden'
+    };
+  },
   render: function() {
-    var imageNodes = this.state.data.map( function(image){
+    var component = this;
+    var imageNodes = this.state.images.map( function(image, index){
         return(
-          React.createElement("li", null, 
-            React.createElement(Image, {url: image.url, desc: image.description}
+          React.createElement("li", {className: "image-container"}, 
+            React.createElement(Image, {
+              url: image.url, 
+              desc: image.description, 
+              getClassName:  component.imageClass, 
+              index: index}
             )
           )
         )
     });
     
     return (
-      React.createElement("ul", null,  imageNodes )
-    )    
+      React.createElement("ul", {className: "gallery"}, 
+         imageNodes, 
+        React.createElement("li", {className:  this.state.count ? 'hidden' : 'placeholder'}, 
+          React.createElement("i", {className: "fa fa-spinner fa-spin"})
+        ), 
+        React.createElement("li", {className:  this.state.count ? 'controller' : 'hidden'}, 
+          React.createElement("i", {onClick:  this.lastImage, className: "fa fa-chevron-circle-left"}), 
+          React.createElement("span", {class: true},  this.state.currentImage + 1, "/", this.state.count), 
+          React.createElement("i", {onClick:  this.nextImage, className: "fa fa-chevron-circle-right"})
+        )
+      )
+    );  
   }
 
 });
 
-},{"../freeImages":160,"./image.jsx":163,"react":159}],162:[function(require,module,exports){
+},{"../freeImages.js":160,"./image.jsx":163,"jquery":2,"react":159}],162:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Gallery = require('./Gallery.jsx');
@@ -40643,12 +40683,17 @@ module.exports = React.createClass({displayName: "exports",
   getInitialState: function() {
     return ({
       url: '',
-      desc: ''
+      desc: '',
+      getClassName: function() { return ''; }
     });     
   },
   render: function() {
     return (
-      React.createElement("img", {src: this.props.url, title: this.props.desc})
+      React.createElement("img", {
+        src: this.props.url, 
+        title: this.props.desc, 
+        className:  this.props.getClassName( this.props.index) }
+      )
     );    
   }
 });

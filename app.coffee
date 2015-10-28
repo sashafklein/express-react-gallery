@@ -6,12 +6,11 @@ cookieParser = require 'cookie-parser'
 bodyParser = require 'body-parser'
 compileSass = require 'express-compile-sass'
 
-routes = require './routes/index'
-users = require './routes/users'
-
 # load env variables from (gitignored) .env file
 env = require('node-env-file')
 env __dirname + '/.env'
+
+routes = require './routes/routes'
 
 app = express()
 staticPath = path.join __dirname, 'public'
@@ -37,7 +36,6 @@ app.use compileSass(
 app.use express.static staticPath
 
 app.use '/', routes
-app.use '/users', users
 
 # catch 404 and forward to error handler
 app.use (req, res, next) ->
