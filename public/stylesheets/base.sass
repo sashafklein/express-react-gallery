@@ -1,7 +1,7 @@
 body
   padding: 50px
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif
-  background: darken(white, 10)
+  background: darken(white, 20)
 
 a
   color: #00B7FF
@@ -9,6 +9,11 @@ a
 .hidden
   display: none
 
+button[disabled]
+  background:#ccc
+  border-color: #ccc
+  text-shadow:none
+  
 #gallery
   ul.gallery
     padding: 2% 0 2.5% 0
@@ -21,6 +26,8 @@ a
         cursor: pointer
         font-size: 200%
         margin: 2% 1%
+        &:hover
+          color: darken( #33C3F0, 15 )
       span
         font-size: 30px
         font-weight: bold
@@ -33,17 +40,17 @@ a
         margin-bottom: 25px
       a
         font-size: 200%
+      &.placeholder
+        height: 100%
+        margin: auto
+        text-align: center
+        i
+          font-size: 50px
+          position: relative
+          top: calc(50% - 50px)
+          margin: 50px 0
     img
       width: 100%
-    li.placeholder
-      height: 100%
-      margin: auto
-      text-align: center
-      i
-        font-size: 50px
-        position: relative
-        top: calc(50% - 50px)
-        margin: 50px 0
 
   .gallery-search
     text-align: left
@@ -53,11 +60,3 @@ a
       min-width: 200px
       width: 30%
       margin-right: 5%
-    .spacer
-      width: 5%
-      display: inline-block
-
-    button[disabled]
-      background:#ccc
-      border-color: #ccc
-      text-shadow:none
