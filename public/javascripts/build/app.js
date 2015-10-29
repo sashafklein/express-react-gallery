@@ -40592,7 +40592,7 @@ module.exports = FreeImages;
 var $ = require('jquery')
 var React = require('react');
 var Image = require('./image.jsx');
-var GalleryCreator = require('./galleryCreator.jsx');
+var GallerySearch = require('./gallerySearch.jsx');
 var FreeImages = require("../freeImages.js");
 
 module.exports = React.createClass({displayName: "exports",
@@ -40654,9 +40654,12 @@ module.exports = React.createClass({displayName: "exports",
     
     return (
       React.createElement("div", {className: "full-gallery"}, 
-        React.createElement(GalleryCreator, {loadImages:  this.loadImages}), 
 
         React.createElement("ul", {className: "gallery"}, 
+
+          React.createElement(GallerySearch, {
+            loadImages:  this.loadImages, 
+            className:  this.state.count ? '' : 'hidden'}), 
           
            imageNodes, 
           
@@ -40676,7 +40679,7 @@ module.exports = React.createClass({displayName: "exports",
 
 });
 
-},{"../freeImages.js":160,"./galleryCreator.jsx":163,"./image.jsx":164,"jquery":2,"react":159}],162:[function(require,module,exports){
+},{"../freeImages.js":160,"./gallerySearch.jsx":163,"./image.jsx":164,"jquery":2,"react":159}],162:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Gallery = require('./Gallery.jsx');
@@ -40692,31 +40695,33 @@ var React = require('react');
 module.exports = React.createClass({displayName: "exports",
 
   getInitialState: function() {
-    return { value: 'nature' }
+    return { value: 'nature', loaded: false }
   },
   componentDidMount: function() {
-    this.props.loadImages( this.state.value );
+    this.resetImages();
   },
   handleChange: function(event) {
     this.setState({ value: event.target.value });
   },
   resetImages: function() {
     this.props.loadImages( this.state.value );
-    this.setState({ value: '' });
+    this.setState({ value: null, loaded: true });
   },
   render: function() {
     return (
-      React.createElement("div", {className: "gallery-creator"}, 
+      React.createElement("div", {className: "gallery-search container"}, 
         React.createElement("input", {
+          className: "u-full-width", 
           type: "text", 
           value:  this.state.value, 
-          placeholder: "Keyword Search", 
+          placeholder: "Fetch new images by category", 
           onChange:  this.handleChange}), 
 
         React.createElement("button", {
           onClick:  this.resetImages, 
-          className: "button-primary"}, 
-          "View Gallery"
+          className: "button-primary", 
+          disabled: !this.state.value}, 
+          "Update Gallery"
         )
       )
     );  

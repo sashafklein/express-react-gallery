@@ -9,37 +9,55 @@ a
 .hidden
   display: none
 
-ul.gallery
-  padding: 80px 0 15px 0
-  background: lighten(gray, 20)
-  .controller
-    text-align: center
-    margin: 15px
-    i
-      color: darken(gray, 20)
-      cursor: pointer
-      font-size: 200%
-      margin: 20px 10px
-    span
-      font-size: 30px
-      font-weight: bold
-  li
-    list-style: none
-    &.image-container
+#gallery
+  ul.gallery
+    padding: 2% 0 2.5% 0
+    background: lighten(gray, 20)
+    .controller
       text-align: center
-      margin-bottom: 25px
-    a
-      font-size: 200%
-  img
-    height: 400px
-    margin: auto
-  li.placeholder
-    height: 100%
-    width: 600px
-    margin: auto
-    text-align: center
-    i
-      font-size: 60px
-      position: relative
-      top: calc(50% - 60px)
-      margin-bottom: 50px
+      margin: auto
+      i
+        color: darken(gray, 20)
+        cursor: pointer
+        font-size: 200%
+        margin: 2% 1%
+      span
+        font-size: 30px
+        font-weight: bold
+    li
+      list-style: none
+      width: 80%
+      margin: auto
+      &.image-container
+        text-align: center
+        margin-bottom: 25px
+      a
+        font-size: 200%
+    img
+      width: 100%
+    li.placeholder
+      height: 100%
+      margin: auto
+      text-align: center
+      i
+        font-size: 50px
+        position: relative
+        top: calc(50% - 50px)
+        margin: 50px 0
+
+  .gallery-search
+    text-align: left
+    margin-top: 2%
+    margin-bottom: 2%
+    input
+      min-width: 200px
+      width: 30%
+      margin-right: 5%
+    .spacer
+      width: 5%
+      display: inline-block
+
+    button[disabled]
+      background:#ccc
+      border-color: #ccc
+      text-shadow:none

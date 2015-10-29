@@ -1,7 +1,7 @@
 var $ = require('jquery')
 var React = require('react');
 var Image = require('./image.jsx');
-var GalleryCreator = require('./galleryCreator.jsx');
+var GallerySearch = require('./gallerySearch.jsx');
 var FreeImages = require("../freeImages.js");
 
 module.exports = React.createClass({
@@ -63,9 +63,12 @@ module.exports = React.createClass({
     
     return (
       <div className='full-gallery'>
-        <GalleryCreator loadImages={ this.loadImages }/> 
 
         <ul className='gallery'>
+
+          <GallerySearch 
+            loadImages={ this.loadImages } 
+            className={ this.state.count ? '' : 'hidden' }/> 
           
           { imageNodes }
           
