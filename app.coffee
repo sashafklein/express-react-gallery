@@ -6,10 +6,6 @@ cookieParser = require 'cookie-parser'
 bodyParser = require 'body-parser'
 compileSass = require 'express-compile-sass'
 
-# load env variables from (gitignored) .env file
-env = require('node-env-file')
-env __dirname + '/.env'
-
 routes = require './routes/routes'
 
 app = express()
