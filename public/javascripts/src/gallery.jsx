@@ -1,6 +1,7 @@
 var $ = require('jquery')
 var React = require('react');
 var Image = require('./image.jsx');
+var GalleryCreator = require('./galleryCreator.jsx');
 var FreeImages = require("../freeImages.js");
 
 module.exports = React.createClass({
@@ -8,9 +9,11 @@ module.exports = React.createClass({
   getInitialState: function() {
     return { images: [], currentImage: 0, count: 0 }
   },
-  componentDidMount: function() {
+  loadImages: function(searchTerm) {
     var component = this;
-    new FreeImages('nature').fetch( function(images) {
+    component.setState({ images: [], currentImage: 0, count: 0 });
+
+    new FreeImages( searchTerm ).fetch( function(images) {
       component.setState({ images: images, count: images.length });
     });
   },
@@ -59,17 +62,24 @@ module.exports = React.createClass({
     });
     
     return (
-      <ul className='gallery'>
-        { imageNodes }
-        <li className={ this.state.count ? 'hidden' : 'placeholder' }>
-          <i className='fa fa-spinner fa-spin'></i>
-        </li>
-        <li className={ this.state.count ? 'controller' : 'hidden' }>
-          <i onClick={ this.lastImage } className='fa fa-chevron-circle-left' ></i>
-          <span class>{ this.state.currentImage + 1 }/{this.state.count}</span>
-          <i onClick={ this.nextImage } className='fa fa-chevron-circle-right'></i>
-        </li>
-      </ul>
+      <div className='full-gallery'>
+        <GalleryCreator loadImages={ this.loadImages }/> 
+
+        <ul className='gallery'>
+          
+          { imageNodes }
+          
+          <li className={ this.state.count ? 'hidden' : 'placeholder' }>
+            <i className='fa fa-spinner fa-spin'></i>
+          </li>
+
+          <li className={ this.state.count ? 'controller' : 'hidden' }>
+            <i onClick={ this.lastImage } className='fa fa-chevron-circle-left' ></i>
+            <span>{ this.state.currentImage + 1 }/{this.state.count}</span>
+            <i onClick={ this.nextImage } className='fa fa-chevron-circle-right'></i>
+          </li>
+        </ul>
+      </div>
     );  
   }
 

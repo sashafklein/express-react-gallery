@@ -40592,6 +40592,7 @@ module.exports = FreeImages;
 var $ = require('jquery')
 var React = require('react');
 var Image = require('./image.jsx');
+var GalleryCreator = require('./galleryCreator.jsx');
 var FreeImages = require("../freeImages.js");
 
 module.exports = React.createClass({displayName: "exports",
@@ -40599,9 +40600,11 @@ module.exports = React.createClass({displayName: "exports",
   getInitialState: function() {
     return { images: [], currentImage: 0, count: 0 }
   },
-  componentDidMount: function() {
+  loadImages: function(searchTerm) {
     var component = this;
-    new FreeImages('nature').fetch( function(images) {
+    component.setState({ images: [], currentImage: 0, count: 0 });
+
+    new FreeImages( searchTerm ).fetch( function(images) {
       component.setState({ images: images, count: images.length });
     });
   },
@@ -40650,15 +40653,22 @@ module.exports = React.createClass({displayName: "exports",
     });
     
     return (
-      React.createElement("ul", {className: "gallery"}, 
-         imageNodes, 
-        React.createElement("li", {className:  this.state.count ? 'hidden' : 'placeholder'}, 
-          React.createElement("i", {className: "fa fa-spinner fa-spin"})
-        ), 
-        React.createElement("li", {className:  this.state.count ? 'controller' : 'hidden'}, 
-          React.createElement("i", {onClick:  this.lastImage, className: "fa fa-chevron-circle-left"}), 
-          React.createElement("span", {class: true},  this.state.currentImage + 1, "/", this.state.count), 
-          React.createElement("i", {onClick:  this.nextImage, className: "fa fa-chevron-circle-right"})
+      React.createElement("div", {className: "full-gallery"}, 
+        React.createElement(GalleryCreator, {loadImages:  this.loadImages}), 
+
+        React.createElement("ul", {className: "gallery"}, 
+          
+           imageNodes, 
+          
+          React.createElement("li", {className:  this.state.count ? 'hidden' : 'placeholder'}, 
+            React.createElement("i", {className: "fa fa-spinner fa-spin"})
+          ), 
+
+          React.createElement("li", {className:  this.state.count ? 'controller' : 'hidden'}, 
+            React.createElement("i", {onClick:  this.lastImage, className: "fa fa-chevron-circle-left"}), 
+            React.createElement("span", null,  this.state.currentImage + 1, "/", this.state.count), 
+            React.createElement("i", {onClick:  this.nextImage, className: "fa fa-chevron-circle-right"})
+          )
         )
       )
     );  
@@ -40666,7 +40676,7 @@ module.exports = React.createClass({displayName: "exports",
 
 });
 
-},{"../freeImages.js":160,"./image.jsx":163,"jquery":2,"react":159}],162:[function(require,module,exports){
+},{"../freeImages.js":160,"./galleryCreator.jsx":163,"./image.jsx":164,"jquery":2,"react":159}],162:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Gallery = require('./Gallery.jsx');
@@ -40677,6 +40687,44 @@ ReactDOM.render(
 );
 
 },{"./Gallery.jsx":161,"react":159,"react-dom":4}],163:[function(require,module,exports){
+var React = require('react');
+
+module.exports = React.createClass({displayName: "exports",
+
+  getInitialState: function() {
+    return { value: 'nature' }
+  },
+  componentDidMount: function() {
+    this.props.loadImages( this.state.value );
+  },
+  handleChange: function(event) {
+    this.setState({ value: event.target.value });
+  },
+  resetImages: function() {
+    this.props.loadImages( this.state.value );
+    this.setState({ value: '' });
+  },
+  render: function() {
+    return (
+      React.createElement("div", {className: "gallery-creator"}, 
+        React.createElement("input", {
+          type: "text", 
+          value:  this.state.value, 
+          placeholder: "Keyword Search", 
+          onChange:  this.handleChange}), 
+
+        React.createElement("button", {
+          onClick:  this.resetImages, 
+          className: "button-primary"}, 
+          "View Gallery"
+        )
+      )
+    );  
+  }
+
+});
+
+},{"react":159}],164:[function(require,module,exports){
 var React = require('react');
 
 module.exports = React.createClass({displayName: "exports",
