@@ -40638,7 +40638,7 @@ var Image = require('./image.jsx');
 module.exports = React.createClass({displayName: "exports",
 
   getInitialState: function() {
-    return { images: [], currentImage: 0, count: 0 }
+    return { images: [], currentImage: 0, count: 0, acceptKeyPress: true }
   },
   componentWillReceiveProps: function (props) {
     this.setState({
@@ -40648,7 +40648,9 @@ module.exports = React.createClass({displayName: "exports",
     });
   },
   componentWillMount: function() {
-    document.addEventListener("keydown", this.handleKeyPress, false);
+    if (this.state.acceptKeyPress) {
+      document.addEventListener("keydown", this.handleKeyPress, false);
+    }
   },
   placeholderClass: function () {
     if ( this.state.count == 0 ) {
@@ -40790,8 +40792,8 @@ module.exports = React.createClass({displayName: "exports",
   render: function() {
     return (
       React.createElement("img", {
-        src: this.props.url, 
-        title: this.props.desc, 
+        src:  this.props.url, 
+        title:  this.props.desc, 
         className:  this.props.getClassName( this.props.index) }
       )
     );    

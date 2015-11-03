@@ -5,7 +5,7 @@ var Image = require('./image.jsx');
 module.exports = React.createClass({
 
   getInitialState: function() {
-    return { images: [], currentImage: 0, count: 0 }
+    return { images: [], currentImage: 0, count: 0, acceptKeyPress: true }
   },
   componentWillReceiveProps: function (props) {
     this.setState({
@@ -15,7 +15,9 @@ module.exports = React.createClass({
     });
   },
   componentWillMount: function() {
-    document.addEventListener("keydown", this.handleKeyPress, false);
+    if (this.state.acceptKeyPress) {
+      document.addEventListener("keydown", this.handleKeyPress, false);
+    }
   },
   placeholderClass: function () {
     if ( this.state.count == 0 ) {

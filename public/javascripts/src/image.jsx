@@ -11,9 +11,9 @@ module.exports = React.createClass({
   render: function() {
     return (
       <img 
-        src={this.props.url} 
-        title={this.props.desc} 
-        className={ this.props.getClassName( this.props.index ) }>
+        src={ this.props.url } 
+        title={ this.props.desc }
+        className={ this.props.getClassName( this.props.index ) } >
       </img>
     );    
   }
