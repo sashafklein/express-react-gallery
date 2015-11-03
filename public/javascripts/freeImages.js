@@ -30,7 +30,7 @@ FreeImages = (function() {
   };
 
   FreeImages.prototype._dataUrl = function() {
-    return "http://freeimages.pictures/api/user/" + 7419704496394844 + "/?keyword=" + this.search + "&format=jsonp";
+    return "//freeimages.pictures/api/user/" + 7419704496394844 + "/?keyword=" + this.search + "&format=jsonp";
   };
 
   return FreeImages;
