@@ -2,6 +2,8 @@
 
 A simple Express app which uses React components to build a gallery populated from the Pixabay API, and which can grab new categories of images without a page refresh. 
 
+[Check out the simple demo](https://express-react-gallery.herokuapp.com/).
+
 This was an exploration of a series of technologies with which I have very little experience, so there are definitely some things I'd want to work on/change. Mostly:
 
 - Figure out a working environment variable solution to mask the API key (although Pixabay is free, so it doesn't much matter here), probably by routing the API call through the server-side code.
