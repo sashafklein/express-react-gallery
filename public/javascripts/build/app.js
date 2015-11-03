@@ -40563,12 +40563,8 @@ FreeImages = (function() {
       type: 'GET',
       url: this._dataUrl(),
       dataType: 'jsonp',
-      jsonpCallback: 'jsonCallback',
       success: function(result) {
-        var images;
-        images = _.reduce(result.sources, (function(array, source) {
-          return array.concat(source.result);
-        }), []);
+        var images = _.map(result.hits, function(r, i) { return { url: r.webformatURL, key: i }; });
         return callback(images);
       },
       error: function(result) {
@@ -40579,7 +40575,7 @@ FreeImages = (function() {
   };
 
   FreeImages.prototype._dataUrl = function() {
-    return "http://freeimages.pictures/api/user/" + 7419704496394844 + "/?keyword=" + this.search + "&format=jsonp";
+    return "//pixabay.com/api/?username=" + 'sashafklein' + "&key=" + '31d30cd2461570421156' + "&q=" + this.search;
   };
 
   return FreeImages;
