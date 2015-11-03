@@ -1,14 +1,14 @@
-var $, FreeImages, _;
+var $, ImagesAPI, _;
 
 $ = require('jquery');
 _ = require('lodash');
 
-FreeImages = (function() {
-  function FreeImages(search) {
+ImagesAPI = (function() {
+  function ImagesAPI(search) {
     this.search = search;
   }
 
-  FreeImages.prototype.fetch = function(callback) {
+  ImagesAPI.prototype.fetch = function(callback) {
     return $.ajax({
       crossDomain: true,
       type: 'GET',
@@ -25,12 +25,12 @@ FreeImages = (function() {
     });
   };
 
-  FreeImages.prototype._dataUrl = function() {
+  ImagesAPI.prototype._dataUrl = function() {
     return "//pixabay.com/api/?username=" + 'sashafklein' + "&key=" + '31d30cd2461570421156' + "&q=" + this.search;
   };
 
-  return FreeImages;
+  return ImagesAPI;
 
 })();
 
-module.exports = FreeImages;
+module.exports = ImagesAPI;

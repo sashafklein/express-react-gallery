@@ -8,8 +8,14 @@ module.exports = React.createClass({
   componentDidMount: function() {
     this.resetImages();
   },
-  handleChange: function(event) {
-    this.setState({ value: event.target.value });
+  handleChange: function(e) {
+    this.setState({ value: e.target.value });
+  },
+  handleKeyDown: function(e) {
+    var ENTER = 13;
+    if( e.keyCode == ENTER ) {
+      this.resetImages();
+    };
   },
   resetImages: function() {
     this.props.loadImages( this.state.value );
@@ -23,6 +29,7 @@ module.exports = React.createClass({
           type='text' 
           value={ this.state.value } 
           placeholder='Fetch new images by category'
+          onKeyDown={ this.handleKeyDown }
           onChange={ this.handleChange }></input>
 
         <button 

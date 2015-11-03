@@ -1,21 +1,21 @@
 var $ = require('jquery')
 var React = require('react');
 var Image = require('./image.jsx');
-var GallerySearch = require('./gallerySearch.jsx');
-var FreeImages = require("../freeImages.js");
 
 module.exports = React.createClass({
 
   getInitialState: function() {
     return { images: [], currentImage: 0, count: 0 }
   },
-  loadImages: function(searchTerm) {
-    var component = this;
-    component.setState({ images: [], currentImage: 0, count: 0 });
-
-    new FreeImages( searchTerm ).fetch( function(images) {
-      component.setState({ images: images, count: images.length });
+  componentWillReceiveProps: function (props) {
+    this.setState({
+      images: props.images,
+      count: props.images.length,
+      currentImage: 0
     });
+  },
+  componentWillMount: function() {
+    document.addEventListener("keydown", this.handleKeyPress, false);
   },
   placeholderClass: function () {
     if ( this.state.count == 0 ) {
@@ -27,7 +27,7 @@ module.exports = React.createClass({
   nextImage: function() {
     this.selectImage( this.state.currentImage + 1);
   },
-  lastImage: function() {
+  previousImage: function() {
     this.selectImage( this.state.currentImage - 1 );
   },
   selectImage: function(imageIndex) {
@@ -46,8 +46,18 @@ module.exports = React.createClass({
       return 'hidden'
     };
   },
+  handleKeyPress: function(e) {
+    if ( this.state.count ) {
+      if ( e.keyCode == 39 ) { // Right Arrow Key
+        this.nextImage();
+      } else if (e.keyCode == 37) { // Left Arrow Key
+        this.previousImage();
+      }
+    };
+  },
   render: function() {
     var component = this;
+
     var imageNodes = this.state.images.map( function(image, index){
         return(
           <li className='image-container'>
@@ -62,14 +72,12 @@ module.exports = React.createClass({
     });
     
     return (
-      <div className='full-gallery'>
+      <div className='full-gallery' onKeyDown={ this.handleKeyDown }>
 
         <ul className='gallery'>
 
-          <GallerySearch 
-            loadImages={ this.loadImages } 
-            className={ this.state.count ? '' : 'hidden' }/> 
-          
+          { this.props.children }
+
           { imageNodes }
           
           <li className={ this.state.count ? 'hidden' : 'placeholder' }>
@@ -77,7 +85,7 @@ module.exports = React.createClass({
           </li>
 
           <li className={ this.state.count ? 'controller' : 'hidden' }>
-            <i onClick={ this.lastImage } className='fa fa-chevron-circle-left' ></i>
+            <i onClick={ this.previousImage } className='fa fa-chevron-circle-left' ></i>
             <span>{ this.state.currentImage + 1 }/{this.state.count}</span>
             <i onClick={ this.nextImage } className='fa fa-chevron-circle-right'></i>
           </li>

@@ -40547,17 +40547,17 @@ module.exports = warning;
 module.exports = require('./lib/React');
 
 },{"./lib/React":28}],160:[function(require,module,exports){
-var $, FreeImages, _;
+var $, ImagesAPI, _;
 
 $ = require('jquery');
 _ = require('lodash');
 
-FreeImages = (function() {
-  function FreeImages(search) {
+ImagesAPI = (function() {
+  function ImagesAPI(search) {
     this.search = search;
   }
 
-  FreeImages.prototype.fetch = function(callback) {
+  ImagesAPI.prototype.fetch = function(callback) {
     return $.ajax({
       crossDomain: true,
       type: 'GET',
@@ -40574,35 +40574,81 @@ FreeImages = (function() {
     });
   };
 
-  FreeImages.prototype._dataUrl = function() {
+  ImagesAPI.prototype._dataUrl = function() {
     return "//pixabay.com/api/?username=" + 'sashafklein' + "&key=" + '31d30cd2461570421156' + "&q=" + this.search;
   };
 
-  return FreeImages;
+  return ImagesAPI;
 
 })();
 
-module.exports = FreeImages;
+module.exports = ImagesAPI;
 
 },{"jquery":2,"lodash":3}],161:[function(require,module,exports){
+var React = require('react');
+var ImagesAPI = require('../imagesAPI')
+var GallerySearch = require('./gallerySearch.jsx')
+var Gallery = require('./gallery.jsx')
+
+module.exports = React.createClass({displayName: "exports",
+
+  getInitialState: function() {
+    return { value: 'nature', images: [], count: 0 }
+  },
+  loadImages: function(searchTerm) {
+    var component = this;
+    component.setState({ images: [], count: 0 });
+
+    new ImagesAPI( searchTerm ).fetch( function(images) {
+      component.setState({ images: images, count: images.length });
+    });
+  },
+  render: function() {
+    return (
+      React.createElement("div", {className: "gallery-containing-div"}, 
+        React.createElement(Gallery, {images:  this.state.images}, 
+          
+          React.createElement(GallerySearch, {
+            value: "nature", 
+            loadImages:  this.loadImages, 
+            className:  this.state.count ? '' : 'hidden'})
+
+        )
+      )
+    );  
+  }
+
+});
+
+},{"../imagesAPI":160,"./gallery.jsx":163,"./gallerySearch.jsx":164,"react":159}],162:[function(require,module,exports){
+var React = require('react');
+var ReactDOM = require('react-dom');
+var GalleryLoader = require('./GalleryLoader.jsx');
+
+ReactDOM.render(
+  React.createElement(GalleryLoader, null),
+  document.getElementById('gallery-loader')
+);
+
+},{"./GalleryLoader.jsx":161,"react":159,"react-dom":4}],163:[function(require,module,exports){
 var $ = require('jquery')
 var React = require('react');
 var Image = require('./image.jsx');
-var GallerySearch = require('./gallerySearch.jsx');
-var FreeImages = require("../freeImages.js");
 
 module.exports = React.createClass({displayName: "exports",
 
   getInitialState: function() {
     return { images: [], currentImage: 0, count: 0 }
   },
-  loadImages: function(searchTerm) {
-    var component = this;
-    component.setState({ images: [], currentImage: 0, count: 0 });
-
-    new FreeImages( searchTerm ).fetch( function(images) {
-      component.setState({ images: images, count: images.length });
+  componentWillReceiveProps: function (props) {
+    this.setState({
+      images: props.images,
+      count: props.images.length,
+      currentImage: 0
     });
+  },
+  componentWillMount: function() {
+    document.addEventListener("keydown", this.handleKeyPress, false);
   },
   placeholderClass: function () {
     if ( this.state.count == 0 ) {
@@ -40614,7 +40660,7 @@ module.exports = React.createClass({displayName: "exports",
   nextImage: function() {
     this.selectImage( this.state.currentImage + 1);
   },
-  lastImage: function() {
+  previousImage: function() {
     this.selectImage( this.state.currentImage - 1 );
   },
   selectImage: function(imageIndex) {
@@ -40633,8 +40679,18 @@ module.exports = React.createClass({displayName: "exports",
       return 'hidden'
     };
   },
+  handleKeyPress: function(e) {
+    if ( this.state.count ) {
+      if ( e.keyCode == 39 ) { // Right Arrow Key
+        this.nextImage();
+      } else if (e.keyCode == 37) { // Left Arrow Key
+        this.previousImage();
+      }
+    };
+  },
   render: function() {
     var component = this;
+
     var imageNodes = this.state.images.map( function(image, index){
         return(
           React.createElement("li", {className: "image-container"}, 
@@ -40649,14 +40705,12 @@ module.exports = React.createClass({displayName: "exports",
     });
     
     return (
-      React.createElement("div", {className: "full-gallery"}, 
+      React.createElement("div", {className: "full-gallery", onKeyDown:  this.handleKeyDown}, 
 
         React.createElement("ul", {className: "gallery"}, 
 
-          React.createElement(GallerySearch, {
-            loadImages:  this.loadImages, 
-            className:  this.state.count ? '' : 'hidden'}), 
-          
+           this.props.children, 
+
            imageNodes, 
           
           React.createElement("li", {className:  this.state.count ? 'hidden' : 'placeholder'}, 
@@ -40664,7 +40718,7 @@ module.exports = React.createClass({displayName: "exports",
           ), 
 
           React.createElement("li", {className:  this.state.count ? 'controller' : 'hidden'}, 
-            React.createElement("i", {onClick:  this.lastImage, className: "fa fa-chevron-circle-left"}), 
+            React.createElement("i", {onClick:  this.previousImage, className: "fa fa-chevron-circle-left"}), 
             React.createElement("span", null,  this.state.currentImage + 1, "/", this.state.count), 
             React.createElement("i", {onClick:  this.nextImage, className: "fa fa-chevron-circle-right"})
           )
@@ -40675,17 +40729,7 @@ module.exports = React.createClass({displayName: "exports",
 
 });
 
-},{"../freeImages.js":160,"./gallerySearch.jsx":163,"./image.jsx":164,"jquery":2,"react":159}],162:[function(require,module,exports){
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Gallery = require('./Gallery.jsx');
-
-ReactDOM.render(
-  React.createElement(Gallery, null),
-  document.getElementById('gallery')
-);
-
-},{"./Gallery.jsx":161,"react":159,"react-dom":4}],163:[function(require,module,exports){
+},{"./image.jsx":165,"jquery":2,"react":159}],164:[function(require,module,exports){
 var React = require('react');
 
 module.exports = React.createClass({displayName: "exports",
@@ -40696,8 +40740,14 @@ module.exports = React.createClass({displayName: "exports",
   componentDidMount: function() {
     this.resetImages();
   },
-  handleChange: function(event) {
-    this.setState({ value: event.target.value });
+  handleChange: function(e) {
+    this.setState({ value: e.target.value });
+  },
+  handleKeyDown: function(e) {
+    var ENTER = 13;
+    if( e.keyCode == ENTER ) {
+      this.resetImages();
+    };
   },
   resetImages: function() {
     this.props.loadImages( this.state.value );
@@ -40711,6 +40761,7 @@ module.exports = React.createClass({displayName: "exports",
           type: "text", 
           value:  this.state.value, 
           placeholder: "Fetch new images by category", 
+          onKeyDown:  this.handleKeyDown, 
           onChange:  this.handleChange}), 
 
         React.createElement("button", {
@@ -40725,7 +40776,7 @@ module.exports = React.createClass({displayName: "exports",
 
 });
 
-},{"react":159}],164:[function(require,module,exports){
+},{"react":159}],165:[function(require,module,exports){
 var React = require('react');
 
 module.exports = React.createClass({displayName: "exports",
